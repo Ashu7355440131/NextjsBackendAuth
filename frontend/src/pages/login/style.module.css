@@ -1,0 +1,73 @@
+.container{
+    display: flex;
+    justify-content: center;
+    height:90vh;
+    align-items: center;
+}
+.cardContainer{
+    height:70vh;
+    display:flex;
+    border-radius:10px;
+    overflow:hidden;
+    width:90vh;
+    border-radius:10px;
+    color:black;
+    background-color: rgb(181, 181, 181);
+    box-shadow:10px 10px 15px rgb(32, 31, 31);
+}
+.cardContainer_left{
+    flex:0.6;
+    padding:2rem;
+    text-align: center;
+}
+
+.inputField{
+    padding-inline:1.3rem;
+    padding-block:0.8rem;
+    outline:none;
+    border-radius: 10px;
+    width: 100%;
+    border:1px,solid,silver;
+}
+.inputRow{
+    display: flex;
+    gap:1.2rem;
+}
+.inputContainer{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding-top:1.3rem;
+    max-width: 400px;
+    margin: 0,auto;
+    gap:1.5rem;
+}
+.cardContainer_right{
+    flex:0.4;
+    background:rgb(125, 122, 123);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    gap:0.7rem;
+}
+
+.cardleft_heading{
+    font-weight: bold;
+    font-size:1.8rem;
+}
+.inputContainer a:hover{
+    cursor: pointer;
+    
+}
+.inputContainer a{
+    color: blue;
+}
+.buttonWithOutline{
+    padding: 0.8rem 1.3rem;
+    background: linear-gradient(90deg, rgba(2,0,36,1) 0%, rgba(108,9,121,1) 79%, rgb(24, 47, 52) 100%);
+    width: 100%;
+    border-radius: 10px;
+    cursor: pointer;
+}

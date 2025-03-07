@@ -1,0 +1,57 @@
+.mainContainer{
+    margin-top: 300px;
+}
+.inputField{
+    margin-top:1rem;
+    padding-inline:1.3rem;
+    padding-block:0.8rem;
+    outline:none;
+    border-radius: 10px;
+    width:300px;
+    border:1px,solid,silver;
+}
+.mainInputContainer{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.submitButton{
+    padding-inline:0.2rem;
+    padding-block:0.6rem;
+    outline:none;
+    border-radius: 10px;
+    width:6rem;
+    border:1px solid blue;
+    text-align: center;
+}
+.submit{
+    margin-top:1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.firstContainer{
+    display: flex;
+    
+    justify-content: center;
+    align-items: center;
+}
+.firstParent{
+   margin-top: 250px;
+}
+.firstParentButton{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 1rem;
+}
+.firstSubmit{
+    padding-inline:0.2rem;
+    padding-block:0.6rem;
+    outline:none;
+    border-radius: 10px;
+    width:6rem;
+    border:1px solid blue;
+    text-align: center;
+    cursor: pointer;
+}

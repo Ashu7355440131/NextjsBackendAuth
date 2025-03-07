@@ -25,8 +25,8 @@ const workSchema=new mongoose.Schema({
         default:''
     },
     years:{
-        type:String,
-        default:''
+        type:Number,
+        default:0
     }
 });
 
@@ -34,7 +34,8 @@ const workSchema=new mongoose.Schema({
 const ProfileSchema=new mongoose.Schema({
     userId:{
         type:mongoose.Schema.Types.ObjectId,
-        ref:"User"
+        ref:"User",
+        required:true
     },
     bio:{
         type:String,

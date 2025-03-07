@@ -4,6 +4,7 @@ import bcrypt from 'bcrypt';
 import crypto from 'crypto';
 import nodemailer from 'nodemailer';
 import dotenv from 'dotenv'
+import ConnectionRequest from "../models/connections.model.js";
 
 dotenv.config();
 
@@ -38,6 +39,7 @@ export const register=async(req,res)=>{
 
 export const login=async(req,res)=>{
     try{
+        
         const {email,password}=req.body;
         if(!email || !password){
             return res.status(400).json({message:"All field are requiered"});
@@ -54,9 +56,9 @@ export const login=async(req,res)=>{
         const token=crypto.randomBytes(32).toString("hex");
         await User.updateOne({_id:user._id},{token});//{token:token}
         //it check _id of all document and compare with user._id if matches then add a attribute token
-        return res.json({token});
-    }catch(err){
-        console.log(err);
+        return res.json({token:token});
+    }catch(error){
+        return res.status(500).json({message:error.message})
     }
 }
 
@@ -132,6 +134,7 @@ export const requestPasswordResetOTP=async(req,res)=>{
     const {email}=req.body;
     try{
         const user=await User.findOne({email:email});
+        console.log(user);
         if(!user){
             return res.status(404).json({message:"User not found"});
         }
@@ -171,9 +174,135 @@ export const verifyPasswordResetOTP=async(req,res)=>{
         user.otp=undefined;
         user.otpExpiry=undefined;
         await user.save();
+        console.log("reset successfullly")
         return res.json({message:"Password reset successfully"});
     }catch(error){
         return res.status(500).json({message:error.message})
     }
 }
+
+export const updateProfileData=async(req,res)=>{
+    try{
+        const {token,...newProfileData}=req.body;
+        const userProfile=await User.findOne({token:token});
+        if(!userProfile){
+            return res.status(404).json({message:"User not found"});
+        }
+
+        const profile_to_update=await Profile.findOne({userId:userProfile._id});
+        Object.assign(profile_to_update,newProfileData);
+
+        await profile_to_update.save();
+        res.json({message:"Profile updated successfully"});
+    }catch(error){
+        return res.status(500).json({message:error.message})
+    }
+}
+
+
+export const getAllUserProfile=async(req,res)=>{
+    try{
+        const profiles=await Profile.find().populate("userId","name username email profilePicture");
+        return res.json({profiles});   
+    }catch(error){
+        return res.status(500).json({message:error.message})
+    }
+}
+
+export const sendConnectionRequest=async(req,res)=>{
+    const {token,connectionId}=req.body;
+    try{
+        const user=await User.findOne({token:token});
+        if(!user){
+            return res.status(404).json({message:"User not found"});
+        }
+
+
+        const connectionUser=await User.findOne({_id:connectionId});
+        if(!connectionUser){
+            return res.status(404).json({message:"Connection User not found"});
+        }
+        const existingRequest=await ConnectionRequest.findOne({
+            userId:user._id,
+            connectionId:connectionId
+        })
+        if(existingRequest){
+            return res.status(400).json({message:"Connection request already sent"});
+        }
+        const request=new ConnectionRequest({
+            userId:user._id,
+            connectionId:connectionUser._id
+        })
+        await request.save();
+        return res.json({message:"Request Sent"})
+    }catch(error){
+        return res.status(500).json({message:error.message})
+    }
+}
+
+export const getMyConnectionRequests=async(req,res)=>{
+    const {token}=req.body;
+    try{
+        const user=await User.findOne({token:token});
+        if(!user){
+            return res.status(404).json({message:"User not found"});
+        }
+        const connections=await ConnectionRequest.find({connectionId:user._id})
+        .populate('connectionId','name username email profilePicture');
+
+        return res.json({connections});
+
+    }catch(error){
+        return res.status(500).json({message:error.message})
+    }
+}
+
+
+export const whatAreMyConnections=async(req,res)=>{
+    const {token}=req.body;
+    try{
+        const user=await User.findOne({token:token});
+        if(!user){
+            return res.status(404).json({message:"User not found"});
+        }
+
+        const connections=await ConnectionRequest.find({connectionId:user._id})
+        .populate('userId','name username email profilePicture');
+
+        return res.json(connections);
+
+    }catch(error){
+        return res.status(500).json({message:error.message})
+    }
+}
+
+
+export const acceptConnectionRequest=async(req,res)=>{
+    const {token,requestId,action_type}=req.body;
+    try{
+        const user=await User.findOne({token:token});
+        if(!user){
+            return res.status(404).json({message:"User not found"});
+        }
+
+        const connection=await ConnectionRequest.findOne({_id:requestId});
+        if(!connection){
+            return res.status(404).json({message:"Connection not found"});
+        }
+
+        if(action_type=='accept'){
+            connection.status_accepted=true;
+        }else{
+            connection.status_accepted=false;
+        }
+
+        await connection.save();
+        return res.json({message:"Request Updated"});
+
+    }catch(error){
+        return res.status(500).json({message:error.message})
+    }
+}
+
+
 
